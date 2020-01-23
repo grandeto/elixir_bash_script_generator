@@ -7,6 +7,7 @@ defmodule ElixirBashScriptGenerator.Application do
 
   def start(_type, _args) do
     children = [
+        Plug.Adapters.Cowboy.child_spec(scheme: :http, plug: ElixirBashScriptGenerator.Router, options: [port: 4000])
       # Starts a worker by calling: ElixirBashScriptGenerator.Worker.start_link(arg)
       # {ElixirBashScriptGenerator.Worker, arg}
     ]
