@@ -10,7 +10,7 @@ defmodule ElixirBashScriptGenerator.Router do
     post "/generate" do
         {:ok, body, conn} = read_body(conn)
         body = Poison.decode!(body)
-        IO.inspect(body)
+        ElixirBashScriptGenerator.generate(body)
         send_resp(conn, 201, "created: #{get_in(body, ["message"])}")
     end
 

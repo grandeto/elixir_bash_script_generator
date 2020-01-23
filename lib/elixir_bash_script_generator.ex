@@ -1,18 +1,26 @@
 defmodule ElixirBashScriptGenerator do
-  @moduledoc """
-  Documentation for ElixirBashScriptGenerator.
-  """
+    @moduledoc """
+    Documentation for ElixirBashScriptGenerator.
+    """
 
-  @doc """
-  Hello world.
+    @first_task_name "task-1"
 
-  ## Examples
+    @doc """
+    Hello world.
 
-      iex> ElixirBashScriptGenerator.hello()
-      :world
+    ## Examples
 
-  """
-  def hello do
-    :world
-  end
+        iex> ElixirBashScriptGenerator.sort(map)
+
+    """
+    def generate(data) do
+        %{"tasks" => tasks} = data
+        IO.inspect(sort_tasks(tasks))
+    end
+
+    def sort_tasks(tasks) do
+        Enum.reduce(tasks, %{}, fn task, sorted_tasks ->
+
+        end)
+    end
 end
