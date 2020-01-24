@@ -12,9 +12,11 @@ defmodule ElixirBashScriptGenerator.Router do
         {:ok, body, conn} = read_body(conn)
         body = Poison.decode!(body)
 
-        with {:ok, body} <- Validator.is_map(body),
-            {:ok, tasks} <- Validator.is_list(body["tasks"]),
-            {:ok, sequence} <- Validator.tasks_are_sequence(body["tasks"])
+        with {:ok, body} <- Validator.body_is_map(body),
+            {:ok, tasks} <- Validator.tasks_is_list(body["tasks"]),
+            {:ok, _sequence} <- Validator.tasks_ids_are_sequence(body["tasks"]),
+            {:ok, _required_tasks_ids_range} <- Validator.required_tasks_ids_have_valid_range(body["tasks"]),
+            {:ok, _required_tasks_are_lists} <- Validator.required_tasks_are_lists(body["tasks"])
         do
             response = ElixirBashScriptGenerator.generate(tasks)
             conn
