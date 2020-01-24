@@ -14,8 +14,9 @@ defmodule ElixirBashScriptGenerator.Router do
 
         with {:ok, body} <- Validator.body_is_map(body),
             {:ok, tasks} <- Validator.tasks_is_list(body["tasks"]),
-            {:ok, sequence} <- Validator.tasks_ids_are_sequence(body["tasks"]),
-            {:ok, valid_required_ids_range} <- Validator.valid_required_ids_range(body["tasks"])
+            {:ok, _sequence} <- Validator.tasks_ids_are_sequence(body["tasks"]),
+            {:ok, _required_tasks_ids_range} <- Validator.required_tasks_ids_have_valid_range(body["tasks"]),
+            {:ok, _required_tasks_are_lists} <- Validator.required_tasks_are_lists(body["tasks"])
         do
             response = ElixirBashScriptGenerator.generate(tasks)
             conn

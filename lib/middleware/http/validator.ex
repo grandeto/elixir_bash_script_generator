@@ -15,8 +15,6 @@ defmodule Middleware.Http.Validator do
         end
     end
 
-    # TODO: validate required tasks are lists if present
-
     def tasks_ids_are_sequence(tasks) do
         sequence = Enum.reduce_while(tasks, 1, fn task, acc ->
             if Kernel.is_bitstring(task["name"]) do
@@ -33,7 +31,18 @@ defmodule Middleware.Http.Validator do
         if(sequence > -1, do: {:ok, sequence}, else: {:error, "Wrong tasks sequence. Please start to increment sequentially from task-1"})
     end
 
-    def valid_required_ids_range(tasks) do
+    def required_tasks_are_lists(tasks) do
+        result = Enum.reduce_while(tasks, 0, fn task, acc ->
+            if task["requires"] && !Kernel.is_list(task["requires"]) do
+                {:halt, -1}
+            else
+                {:cont, acc}
+            end
+        end)
+        if result === -1, do: {:error, "All required tasks should be provided in array"}, else: {:ok, result}
+    end
+
+    def required_tasks_ids_have_valid_range(tasks) do
         valid_range = 1..length(tasks)
         is_in_range = Enum.reduce_while(tasks, valid_range, fn task, acc ->
             if Kernel.is_list(task["requires"]) do
