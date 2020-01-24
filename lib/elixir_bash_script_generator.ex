@@ -10,12 +10,11 @@ defmodule ElixirBashScriptGenerator do
 
     ## Examples
 
-        iex> ElixirBashScriptGenerator.sort(map)
+        iex> ElixirBashScriptGenerator.generate(map)
 
     """
-    def generate(data) do
-        %{"tasks" => tasks} = data
-        IO.inspect(sort_tasks(tasks))
+    def generate(data) when is_list(data) do
+        data
     end
 
     def sort_tasks(tasks) do
