@@ -13,8 +13,8 @@ defmodule ElixirBashScriptGenerator do
         iex> ElixirBashScriptGenerator.generate(map)
 
     """
-    def generate(data) when is_list(data) do
-        %{"sorted" => sorted, "executed" => executed, "queued" => _queued} = sort_tasks(data)
+    def sort(data) when is_list(data) do
+        %{"sorted" => sorted, "executed" => _executed, "queued" => _queued} = sort_tasks(data)
         Enum.reverse(sorted)
     end
 
