@@ -3,8 +3,6 @@ defmodule ElixirBashScriptGenerator do
     Documentation for ElixirBashScriptGenerator.
     """
 
-    # @first_task_name "task-1"
-
     @doc """
     Elixir Bash Script Generator
 
