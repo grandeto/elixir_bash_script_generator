@@ -1,27 +1,83 @@
 defmodule ElixirBashScriptGenerator do
     @moduledoc """
-    Documentation for ElixirBashScriptGenerator.
+    Documentation for Elixir Bash Script Generator.
     """
 
     @doc """
-    Elixir Bash Script Generator
+    Generate Bash Commands Endpoint
 
     ## Examples
 
-        iex> ElixirBashScriptGenerator.generate(map)
+        curl -v -H 'Content-Type: application/json' "http://localhost:4000/generate" -d @print_text_task_2.json | bash
 
+    """
+    def generate(data) when is_list(data) do
+        sort(data)
+        |> Enum.reduce("", fn task, acc ->
+            acc <> task["command"] <> "\n"
+        end)
+    end
+
+    @doc """
+    Get Sorted Bash Commands Endpoint
+
+    ## Examples
+
+        POST http://localhost:4000/sort
+
+        Content-Type: application/json
+
+        Body example:
+        {
+            "tasks":[
+                {
+                    "name":"task-1",
+                    "command":"touch file"
+                },
+                {
+                    "name":"task-2",
+                    "command":"cat file",
+                    "requires":[
+                        "task-3"
+                    ]
+                },
+                {
+                    "name":"task-3",
+                    "command":"echo 'Hello World!' > file",
+                    "requires":[
+                        "task-1"
+                    ]
+                },
+                {
+                    "name":"task-4",
+                    "command":"rm file",
+                    "requires":[
+                        "task-2",
+                        "task-3"
+                    ]
+                }
+            ]
+        }
     """
     def sort(data) when is_list(data) do
         %{"sorted" => sorted, "executed" => _executed, "queued" => _queued} = sort_tasks(data)
         Enum.reverse(sorted)
     end
 
+    @doc """
+    Init the Commands Sorting Algorithm
+    """
     def sort_tasks(tasks) do
         Enum.reduce(tasks, %{"sorted" => [], "executed" => [], "queued" => %{}}, fn task, acc ->
             handle_tasks_sorting(task, acc)
         end)
     end
 
+    @doc """
+    Internal router for the Commands Sorting Algorithm.
+
+    Takes the Decision to sort, queue, re-execute, mark as executed or skip a given task
+    """
     def handle_tasks_sorting(task, acc) do
         if task["name"] in acc["executed"] do
             acc
@@ -37,6 +93,9 @@ defmodule ElixirBashScriptGenerator do
         end
     end
 
+    @doc """
+    Checks queued tasks and execute them if needed
+    """
     def check_execute_queued_tasks(task, acc) do
         if Map.has_key?(acc["queued"], task["name"]) do
             queued = acc["queued"]
@@ -51,6 +110,9 @@ defmodule ElixirBashScriptGenerator do
         end
     end
 
+    @doc """
+    Get actual single task dependencies
+    """
     def handle_task_requires(task, acc) do
         requires = task["requires"]
         requires = Enum.reduce(requires, [], fn req_task_name, req_acc ->
@@ -65,6 +127,9 @@ defmodule ElixirBashScriptGenerator do
         end
     end
 
+    @doc """
+    Determinate those task dependencies that need to be queued and mark them as queued
+    """
     def should_be_queued(requires, task) do
         if task["in_queue"] do
             in_queue = task["in_queue"]
@@ -84,6 +149,9 @@ defmodule ElixirBashScriptGenerator do
         end
     end
 
+    @doc """
+    Add task to queue
+    """
     def handle_add_to_queue(task, acc, requires) do
         Enum.reduce(requires, acc, fn req_task_name, acc ->
           if Map.has_key?(acc["queued"], req_task_name) do
@@ -98,6 +166,9 @@ defmodule ElixirBashScriptGenerator do
         end)
     end
 
+    @doc """
+    Append value to list in map
+    """
     def append_value_to_list_in_map(map, key, value, value_key \\ nil) do
         temp_list = map[key]
         value = if Kernel.is_nil(value_key), do: value, else: value[value_key]
