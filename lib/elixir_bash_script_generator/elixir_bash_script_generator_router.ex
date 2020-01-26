@@ -16,14 +16,14 @@ defmodule ElixirBashScriptGenerator.Router do
             {:ok, _required_tasks_are_lists} <- Validator.required_tasks_are_lists(body["tasks"])
         do
             response = case options["function"] do
-                "sort" -> ElixirBashScriptGenerator.sort(tasks)
-                "generate" -> "" # TODO: ElixirBashScriptGenerator.generate(tasks)
+                "sort" -> ElixirBashScriptGenerator.sort(tasks) |> Poison.encode!
+                "generate" -> ElixirBashScriptGenerator.generate(tasks)
                 _ -> []
             end
 
             conn
             |> prepend_resp_headers(options["headers-ok"])
-            |> send_resp(201, Poison.encode!(response))
+            |> send_resp(201, response)
             |> halt()
         else
             {:error, reason} ->
@@ -52,7 +52,7 @@ defmodule ElixirBashScriptGenerator.Router do
         body = Poison.decode!(body)
 
         options = %{
-            "headers-ok" => [{"content-type", "application/x-sh"}],
+            "headers-ok" => [{"content-type", "text/plain"}],
             "headers-error" => [{"content-type", "application/json"}],
             "function" => "generate"
         }
