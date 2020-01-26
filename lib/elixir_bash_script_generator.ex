@@ -36,7 +36,6 @@ defmodule ElixirBashScriptGenerator do
     end
 
     def check_queued_on_task_executed(task, acc) do
-        IO.inspect(acc)
         if acc["queued"][task["name"]] do
             queued = acc["queued"]
             task_queued_jobs = Enum.reverse(queued[task["name"]])
