@@ -32,14 +32,14 @@ defmodule ElixirBashScriptGenerator do
                 task = Map.delete(task, "in_queue")
                 acc = Map.put(acc, "sorted", append_value_to_list_in_map(acc, "sorted", task))
                 acc = Map.put(acc, "executed", append_value_to_list_in_map(acc, "executed", task, "name"))
-                check_queued_on_tasks(task, acc)
+                check_execute_queued_tasks(task, acc)
             else
                 handle_task_requires(task, acc)
             end
         end
     end
 
-    def check_queued_on_tasks(task, acc) do
+    def check_execute_queued_tasks(task, acc) do
         if Map.has_key?(acc["queued"], task["name"]) do
             queued = acc["queued"]
             task_queued_jobs = Enum.reverse(queued[task["name"]])
