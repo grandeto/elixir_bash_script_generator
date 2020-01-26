@@ -25,18 +25,22 @@ defmodule ElixirBashScriptGenerator do
     end
 
     def handle_tasks_sorting(task, acc) do
-        if !task["requires"] do
-            task = Map.delete(task, "in_queue")
-            acc = Map.put(acc, "sorted", append_value_to_list_in_map(acc, "sorted", task))
-            acc = Map.put(acc, "executed", append_value_to_list_in_map(acc, "executed", task, "name"))
-            check_queued_on_task_executed(task, acc)
+        if task["name"] in acc["executed"] do
+            acc
         else
-            handle_task_requires(task, acc)
+            if !task["requires"] do
+                task = Map.delete(task, "in_queue")
+                acc = Map.put(acc, "sorted", append_value_to_list_in_map(acc, "sorted", task))
+                acc = Map.put(acc, "executed", append_value_to_list_in_map(acc, "executed", task, "name"))
+                check_queued_on_tasks(task, acc)
+            else
+                handle_task_requires(task, acc)
+            end
         end
     end
 
-    def check_queued_on_task_executed(task, acc) do
-        if acc["queued"][task["name"]] do
+    def check_queued_on_tasks(task, acc) do
+        if Map.has_key?(acc["queued"], task["name"]) do
             queued = acc["queued"]
             task_queued_jobs = Enum.reverse(queued[task["name"]])
             queued = Map.delete(queued, task["name"])
@@ -58,26 +62,35 @@ defmodule ElixirBashScriptGenerator do
             task = Map.delete(task, "requires")
             handle_tasks_sorting(task, acc)
         else
-            requires = should_be_queued(requires, task)
+            {requires, task} = should_be_queued(requires, task)
             if Enum.empty?(requires), do: acc, else: handle_add_to_queue(task, acc, requires)
         end
     end
 
     def should_be_queued(requires, task) do
         if task["in_queue"] do
-            Enum.reduce(requires, [], fn req_task_name, should_be_queued_acc ->
-                if req_task_name in task["in_queue"], do: should_be_queued_acc, else: [req_task_name | should_be_queued_acc]
+            in_queue = task["in_queue"]
+            requires = Enum.reduce(requires, [], fn req_task_name, should_be_queued_acc ->
+                if req_task_name in in_queue do
+                  should_be_queued_acc
+                else
+                  in_queue = [req_task_name | in_queue]
+                  [req_task_name | should_be_queued_acc]
+                end
             end)
+            task = Map.put(task, "in_queue", in_queue)
+            {requires, task}
         else
-            Map.put(task, "in_queue", requires)
-            requires
+            task = Map.put(task, "in_queue", requires)
+            {requires, task}
         end
     end
 
     def handle_add_to_queue(task, acc, requires) do
         Enum.reduce(requires, acc, fn req_task_name, acc ->
-          if acc["queued"][req_task_name] do
-            queued = append_value_to_list_in_map(acc["queued"], req_task_name, task)
+          if Map.has_key?(acc["queued"], req_task_name) do
+            queued = acc["queued"]
+            queued = Map.put(queued, req_task_name, append_value_to_list_in_map(queued, req_task_name, task))
             Map.put(acc, "queued", queued)
           else
             queued = acc["queued"]
