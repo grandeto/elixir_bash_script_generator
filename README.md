@@ -14,7 +14,7 @@
 ## Examples
 -  Generate and Execude Bash Commands
 
-    `curl -v -H 'Content-Type: application/json' "http://localhost:4000/generate" -d @print_text_task_2.json | bash`
+    `curl -v -H 'Content-Type: application/json' "http://localhost:4000/generate" -d @print_text_task_1.json | bash`
     
 - Get Sorted Bash Commands
 
@@ -54,6 +54,31 @@
                 }
             ]
         }`
+        
+    Response example:
+    
+    `[
+        {
+            "name": "task-1",
+            "command": "touch file1"
+        },
+        {
+            "name": "task-3",
+            "command": "echo 'Hello World!' > file1"
+        },
+        {
+            "name": "task-5",
+            "command": "cat file1"
+        },
+        {
+            "name": "task-2",
+            "command": "rm /tmp/file1"
+        },
+        {
+            "name": "task-4",
+            "command": "pwd"
+        }
+    ]`
         
  *Ready for use JSONs are placed in `bash_tasks` folder
         

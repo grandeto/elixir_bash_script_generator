@@ -8,6 +8,10 @@ defmodule ElixirBashScriptGenerator.Router do
     plug(:match)
     plug(:dispatch)
 
+    @doc """
+    Validate incoming data and return response
+    """
+    @spec validate_and_response(map, Plug.Conn.t(), map) :: Plug.Conn.t()
     def validate_and_response(body, conn, options) do
         with {:ok, body} <- Validator.body_is_map(body),
             {:ok, tasks} <- Validator.tasks_is_list(body["tasks"]),

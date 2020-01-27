@@ -11,6 +11,7 @@ defmodule ElixirBashScriptGenerator do
         curl -v -H 'Content-Type: application/json' "http://localhost:4000/generate" -d @print_text_task_2.json | bash
 
     """
+    @spec generate(maybe_improper_list) :: bitstring
     def generate(data) when is_list(data) do
         sort(data)
         |> Enum.reduce("", fn task, acc ->
@@ -59,6 +60,7 @@ defmodule ElixirBashScriptGenerator do
             ]
         }
     """
+    @spec sort(maybe_improper_list) :: [any]
     def sort(data) when is_list(data) do
         %{"sorted" => sorted, "executed" => _executed, "queued" => _queued} = sort_tasks(data)
         Enum.reverse(sorted)
@@ -67,6 +69,7 @@ defmodule ElixirBashScriptGenerator do
     @doc """
     Init the Commands Sorting Algorithm
     """
+    @spec sort_tasks(list) :: map
     def sort_tasks(tasks) do
         Enum.reduce(tasks, %{"sorted" => [], "executed" => [], "queued" => %{}}, fn task, acc ->
             handle_tasks_sorting(task, acc)
@@ -78,6 +81,7 @@ defmodule ElixirBashScriptGenerator do
 
     Takes the Decision to sort, queue, re-execute, mark as executed or skip a given task
     """
+    @spec handle_tasks_sorting(map, map) :: map
     def handle_tasks_sorting(task, acc) do
         if task["name"] in acc["executed"] do
             acc
@@ -96,6 +100,7 @@ defmodule ElixirBashScriptGenerator do
     @doc """
     Checks queued tasks and execute them if needed
     """
+    @spec check_execute_queued_tasks(map, map) :: map
     def check_execute_queued_tasks(task, acc) do
         if Map.has_key?(acc["queued"], task["name"]) do
             queued = acc["queued"]
@@ -113,6 +118,7 @@ defmodule ElixirBashScriptGenerator do
     @doc """
     Get actual single task dependencies
     """
+    @spec handle_task_requires(map, map) :: map
     def handle_task_requires(task, acc) do
         requires = task["requires"]
         requires = Enum.reduce(requires, [], fn req_task_name, req_acc ->
@@ -130,6 +136,7 @@ defmodule ElixirBashScriptGenerator do
     @doc """
     Determinate those task dependencies that need to be queued and mark them as queued
     """
+    @spec should_be_queued(list, map) :: {list, map}
     def should_be_queued(requires, task) do
         if task["in_queue"] do
             in_queue = task["in_queue"]
@@ -152,6 +159,7 @@ defmodule ElixirBashScriptGenerator do
     @doc """
     Add task to queue
     """
+    @spec handle_add_to_queue(map, map, list) :: map
     def handle_add_to_queue(task, acc, requires) do
         Enum.reduce(requires, acc, fn req_task_name, acc ->
           if Map.has_key?(acc["queued"], req_task_name) do
@@ -169,6 +177,8 @@ defmodule ElixirBashScriptGenerator do
     @doc """
     Append value to list in map
     """
+    @spec append_value_to_list_in_map(map, bitstring, map | bitstring, bitstring | nil) ::
+            nonempty_maybe_improper_list
     def append_value_to_list_in_map(map, key, value, value_key \\ nil) do
         temp_list = map[key]
         value = if Kernel.is_nil(value_key), do: value, else: value[value_key]
