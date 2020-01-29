@@ -11,6 +11,10 @@
 - mix deps.get
 - iex -S mix
 
+## Testing
+
+- mix test
+
 ## Examples
 -  Generate and Execude Bash Commands
 
