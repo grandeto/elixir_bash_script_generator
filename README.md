@@ -28,12 +28,13 @@
     
     Body example:
     
-    `{
+        `{
             "tasks":[
                 {
                     "name":"task-1",
                     "command":"touch file"
                 },
+                
                 {
                     "name":"task-2",
                     "command":"cat file",
@@ -62,6 +63,7 @@
     Response example:
     
     `[
+    
         {
             "name": "task-1",
             "command": "touch file1"
