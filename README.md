@@ -28,7 +28,7 @@
     
     Body example:
     
-        `{
+        {
           "tasks":[
               {
                   "name":"task-1",
@@ -67,11 +67,11 @@
                   ]
               }
           ]
-        }`
+        }
         
     Response example:
     
-        `[
+        [
             {
                 "name": "task-1",
                 "command": "touch file1"
@@ -92,7 +92,7 @@
                 "name": "task-4",
                 "command": "pwd"
             }
-        ]`
+        ]
         
  *Ready for use JSONs are placed in `bash_tasks` folder
         
@@ -102,11 +102,11 @@
 
 Acc structure example:
 
-    `%{
+     %{
         "sorted" => [], 
         "executed" => [], 
         "queued" => %{"task-50" => [%{"name" => "task-5"}, %{"name" => "task-2"}]}
-      }`
+      }
 
     Execute me:
 
