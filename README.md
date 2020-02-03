@@ -29,62 +29,70 @@
     Body example:
     
         `{
-            "tasks":[
-                {
-                    "name":"task-1",
-                    "command":"touch file"
-                },
-                
-                {
-                    "name":"task-2",
-                    "command":"cat file",
-                    "requires":[
-                        "task-3"
-                    ]
-                },
-                {
-                    "name":"task-3",
-                    "command":"echo 'Hello World!' > file",
-                    "requires":[
-                        "task-1"
-                    ]
-                },
-                {
-                    "name":"task-4",
-                    "command":"rm file",
-                    "requires":[
-                        "task-2",
-                        "task-3"
-                    ]
-                }
-            ]
+          "tasks":[
+              {
+                  "name":"task-1",
+                  "command":"touch file2"
+              },
+              {
+                  "name":"task-2",
+                  "command":"ls -lah file2",
+                  "requires":[
+                      "task-3",
+                      "task-5"
+                  ]
+              },
+              {
+                  "name":"task-3",
+                  "command":"echo 'Hello World!' > file2",
+                  "requires":[
+                      "task-1"
+                  ]
+              },
+              {
+                  "name":"task-4",
+                  "command":"pwd",
+                  "requires":[
+                      "task-2",
+                      "task-3",
+                      "task-5"
+                  ]
+              },
+              {
+                  "name":"task-5",
+                  "command":"cat file2",
+                  "requires":[
+                      "task-1",
+                      "task-3"
+                  ]
+              }
+          ]
         }`
         
     Response example:
     
-    `[
-    
-        {
-            "name": "task-1",
-            "command": "touch file1"
-        },
-        {
-            "name": "task-3",
-            "command": "echo 'Hello World!' > file1"
-        },
-        {
-            "name": "task-5",
-            "command": "cat file1"
-        },
-        {
-            "name": "task-2",
-            "command": "rm /tmp/file1"
-        },
-        {
-            "name": "task-4",
-            "command": "pwd"
-        }
-    ]`
+        `[
+            {
+                "name": "task-1",
+                "command": "touch file1"
+            },
+            {
+                "name": "task-3",
+                "command": "echo 'Hello World!' > file1"
+            },
+            {
+                "name": "task-5",
+                "command": "cat file1"
+            },
+            {
+                "name": "task-2",
+                "command": "rm /tmp/file1"
+            },
+            {
+                "name": "task-4",
+                "command": "pwd"
+            }
+        ]`
         
  *Ready for use JSONs are placed in `bash_tasks` folder
         
