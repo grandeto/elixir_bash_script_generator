@@ -102,7 +102,11 @@
 
 Acc structure example:
 
-`%{"sorted" => [], "executed" => [], "queued" => %{"task-50" => [%{"name" => "task-5"}, %{"name" => "task-2"}]}}`
+    `%{
+        "sorted" => [], 
+        "executed" => [], 
+        "queued" => %{"task-50" => [%{"name" => "task-5"}, %{"name" => "task-2"}]}
+      }`
 
     Execute me:
 
