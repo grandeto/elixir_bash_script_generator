@@ -110,21 +110,21 @@ Acc structure example:
 
     Execute me:
 
-    1. if no deps add me to sorted and then to executed
+    1. if I have no deps add me to the sorted and then to executed
     
         check in queued if someone waits for me (queued[my_name])
         
             if no one waits for me, go to the next task
             
-            if someone is found get its own queue [t3,t2,t1] reversed in a new variable, remove this queue from queued, then foreach task in its own queue [t1,t2,t3] execute -> T.1
+            if someone waits for me, get its queue [t3,t2,t1] reversed in a new variable and remove the queue from queued, then foreach task in its own queue [t1,t2,t3] execute -> T.1
 		
-    2. if has deps foreach dep do check if in executed
+    2. if has deps foreach dep do a check if the dep is in executed
     
-        if all my deps are found in executed remove my deps (“requires” key) and execute me -> T.1
+        if all of my deps are found in the executed, then remove my deps (the “requires” key) and execute me -> T.1
         
-        if some of my deps not found in executed create not executed list [t50, t87]
+        if some of my deps is not found inside executed, create a not executed list [t50, t87]
         
-            foreach dep in the not executed deps list check if dep_name (t50) exists in my list having key “in_queue”
+            foreach dep in this not executed list check if dep_name (t50) exists in my list having key “in_queue”
             
                 if all deps exists in “in_queue” list return acc
                 
@@ -137,5 +137,3 @@ Acc structure example:
                     finally add dep_name (t50) into my “in_queue” key (create “in_queue” if not present)
                     
             after foreach ends go to the next task
-
-
